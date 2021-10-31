@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>条件渲染</title>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 条件渲染：
+        1. v-if
+            写法：v-if、v-else-if、v-else
+            适用于：切换频率比较低的场景
+            特点：不展示的DOM元素直接被移除，结构没了
+            注意：v-if 和 v-else-if 和 v-else，不可打断，必须连续着使用 
+        
+        2. v-show
+            写法：v-show='表达式'
+            适用于：切换频率比较高的场景
+            特点：不展示的DOM元素不会被移除，结构仍在，仅仅是改变CSS样式
+        
+        3.备注：使用v-if时，元素可能无法获取到，因为v-if不展示的DOM元素直接被移除。
+               而使用v-show一定可以获取到，因为不展示的DOM元素不会被移除，结构仍在。
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <!-- 使用 v-show 做条件渲染 -->
+        <!-- <h1 v-show="false">{{name}}1</h1> -->
+        <!-- <h1 v-show="1 === 1">{{name}}2</h1> -->
+        
+        <!-- 使用 v-if 做条件渲染 -->
+        <!-- <h1 v-if="false">{{name}}3</h1> -->
+        <!-- <h1 v-if="1 === 1">{{name}}4</h1> -->
+
+        <h2>当然的n值是：{{n}}</h2>
+        <button @click="n++">点我n++</button><br>
+        <div v-show="n===1">HTML</div>
+        <div v-show="n===2">CSS</div>
+        <div v-show="n===3">JavaScript</div>
+
+        <!-- v-if 和 v-else-if 和 v-else，不可打断，必须连续着使用 -->
+        <div v-if="n===4">Angular</div>
+        <div v-else-if="n===5">React</div>
+        <div v-else-if="n===6">Vue</div>
+        <div v-else></div>
+
+        <!-- v-if 与 template 配合使用
+             希望同时展示或隐藏三个h2，除了分别给每一个h2加条件外，还可以给他们包一个外壳，
+             但加 div 的话会影响结构，而 template 不会，
+             template 会在渲染完之后自动脱下，不信你看控制台，三个h2外面有没有 template？ -->
+        <template v-if="n===0">
+            <h2>hh</h2>
+            <h2>hhh</h2>
+            <h2>hhhh</h2>
+        </template>
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        new Vue({
+            el:'#root',   
+            data:{        
+                name:'浙江农林大学',
+                n:0
+            },
+        })
+    </script>
+</body>
+</html>
