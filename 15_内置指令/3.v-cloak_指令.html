@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-cloak</title>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    
+</head>
+<body>
+    <!-- 
+        v-cloak 指令：
+            1. 本质是一个特殊属性，Vue 实例创建完毕并接管容器，会删掉 v-cloak 属性
+            2. 使用 css 配合 v-cloak 指令可以解决网速慢时页面展示出 {{xxx}} 的问题
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <!-- v-cloak 在js文件解析完毕，页面内容也解析完毕的时候会自动消失 -->
+        <div v-cloak>{{name}}</div>
+        <!-- 假设网很慢，导致该js文件等了 5s 才解析完，这时候会将之前的内容未经解析就放到页面上 -->
+        <script src="../js/vue.js"></script>
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        new Vue({
+            el:'#root',   
+            data:{        
+                name:'Hello,Tom'
+            },
+            
+        })
+    </script>
+</body>
+</html>

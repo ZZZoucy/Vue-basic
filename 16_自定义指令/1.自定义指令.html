@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义指令</title>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+        需求1:定义一个 v-big 指令，和 v-text 功能类似，但会把绑定的数值放大 10 倍。
+        需求2:定义一个 v-fbind 指令，和 v-bind 功能类似，但可以让其所绑定的 input 元素默认获取焦点。
+
+        自定义指令总结：
+		    一、定义语法：
+		    	1.局部指令：
+					new Vue({							    new Vue({
+						directives:{指令名:配置对象}    或         directives{指令名:回调函数}
+					}) 										})
+		    	2.全局指令：
+		    		Vue.directive(指令名,配置对象) 或   Vue.directive(指令名,回调函数)   
+		    
+            二、配置对象中常用的3个回调：
+		    	1. bind：指令与元素成功绑定时调用。
+		    	2. inserted：指令所在元素被插入页面时调用。
+		    	3. update：指令所在模板结构被重新解析时    
+		    
+            三、备注：
+		    	1.指令定义时不加v-，但使用时要加v-；
+		    	2.指令名如果是多个单词，要使用kebab-case命名方式，不要用camelCase命名。
+
+
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <h2>当前的n值是：<span v-text="n"></span></h2>
+        <h2>放大10倍后的n值是：<span v-big="n"></span></h2>
+        <button @click="n++">点我n+1</button>
+        <hr>
+        <input type="text" v-fbind="n">
+        <!-- <input type="text" v-focus-bind="n"> -->
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        // 在 new Vue 里写的自定义指令都是局部的，只能当前实例可以使用
+        // Vue.directive('fbind',function(){}) 定义的就是全局的 (与过滤器一致)  / 对象或函数直接写在第二个参数的位置
+        new Vue({
+            el:'#root',   
+            data:{        
+               n:1 
+            },
+            directives:{
+                // big函数何时会被调用？
+                // 1. 指令与元素成功绑定时(一上来)
+                // 2. 指令所在的模版被重新解析时(意思就是，不一定是n变的时候才调用big函数，也可能是其他数据变的时候，只有当前模板重新渲染，就会调用)
+                // 自定义指令接收两个参数：绑定指令的DOM节点元素(span)，绑定指令的值(n)
+                big(element,binding){
+                    element.innerText = binding.value * 10
+                },
+                fbind:{
+                    // 指令与元素成功绑定时(一上来)
+                    bind(element,binding){
+                        // 所有指令里的 this 都指向 window
+                        console.log('fbind',this) 
+                        element.value = binding.value
+                    },
+                    // 指令所在元素被插入页面时
+                    inserted(element,binding){
+                        element.focus()
+                    },
+                    // 指令所在的模版被重新解析时
+                    update(element,binding){
+                        element.value = binding.value
+                    }
+                    // 我们会发现，其实函数的形式就是写了 bind 和 update 两个钩子
+                    // 所以如果没有一定要用到 inserted (获取父元素、获取焦点...)，就可以写成函数形式
+                },
+                // 'focus-bind': {...}
+            }
+        })
+    </script>
+</body>
+</html>

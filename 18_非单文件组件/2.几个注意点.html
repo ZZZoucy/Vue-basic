@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>几个注意点</title>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+        几个注意点：
+            1. 关于组件名：
+                一个单词组成：
+                    第一种写法（首字母小写）：school
+                    第二种写法（首字母大写）：School
+                多个单词组成：
+                    第一种写法（kebab-case命名）：my-school
+                    第二种写法（CamelCase命名）：MySchool（需要 Vue 脚手架支持）
+                备注：
+                    (1) 组件名尽可能回避 HTML 中已有的元素名称，例如：h2、H2都不行
+                    (2) 可以使用name配置项指定组件在开发者工具中呈现的名字
+            
+            2. 关于组件标签：
+                第一种写法：<School></School>
+                第二种写法：<School/>
+                备注：不用使用脚手架时，<School/>会导致后续组件不能渲染
+            
+            3. 一个简写方法：
+                const School = Vue.extend(options) 可简写为：const School = options
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <School></School>
+        <School/>
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        const School = Vue.extend({
+            name:'Zafu',
+            template:`
+                <div>
+                    <h2>学校名称：{{schoolName}}</h2>
+                    <h2>学校地址：{{address}}</h2>
+                </div>
+            `,
+            data() {
+                return {
+                    schoolName:'zufu',
+                    address:'hangzhou'
+                }
+            },
+        })
+        new Vue({
+            el:'#root',   
+            components:{
+                School
+            }
+        })
+    </script>
+</body>
+</html> 

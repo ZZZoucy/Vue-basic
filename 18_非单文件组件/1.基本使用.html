@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基本使用</title>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+    <!-- 
+        Vue 中使用组件的三大步骤：
+            1. 定义组件（创建组件）
+            2. 注册组件
+            3. 使用组件（写组件标签）
+        
+        1. 如何定义一个组件？
+            使用 Vue.extend(option) 创建，其中 options 和 new Vue(options) 时传入的那个 options 几乎一样，但也有点区别：
+            区别如下：
+                el 不要写，为什么？因为最终所有的组件都要经过一个 vm 管理，由 vm 中的 el 决定服务哪个容器
+                data 必须写成函数，为什么？因为要避免组件被复用时，数据存在引用关系
+            备注：使用 template 可以配置组件结构
+        
+        2. 如何注册组件？
+            局部注册：靠 new Vue 的时候传入 components 选项
+            全局注册：靠 Vue.component('组件名',组件)
+        
+        3. 如何编写组件标签(如何使用组件)
+            <School></School>
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <!-- 第三步：编写组件标签，使用组件 -->
+        <School></School>
+        <hr> 
+        <Student></Student>
+        <hr>
+        <Hello></Hello>
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        // 第一步：创建 school 组件
+        const School = Vue.extend({
+            // 结构
+            template:`
+                <div>
+                    <h2>学校名称：{{schoolName}}</h2>
+                    <h2>学校地址：{{address}}</h2>
+                    <button @click="add">点我提示学校名称</button>
+                </div>
+            `,
+            // 组件定义时，一定不要写el配置项，因为最终所有的组件都要被一个vm管理，由vm决定服务于谁
+            // el:'#root', 
+            // 数据：组件的data必须写成函数的形式    
+            data(){  
+                return{
+                    schoolName:'zafu',
+                    address:'hangzhou'
+                }    
+            },
+            methods:{
+                add(){
+                    alert(this.schoolName)
+                }
+            }
+        })
+
+        // 第一步：创建 student 组件
+        const Student = Vue.extend({
+            // 结构
+            template:`
+                <div>
+                    <h2>学生姓名：{{studentName}}</h2>
+                    <h2>学生年龄：{{age}}</h2>
+                </div>
+            `,
+            // 组件定义时，一定不要写el配置项，因为最终所有的组件都要被一个vm管理，由vm决定服务于谁
+            // el:'#root', 
+            // 数据：组件的data必须写成函数的形式    
+            data(){  
+                return{
+                    studentName:'Tom',
+                    age:18
+                }    
+            },
+        })
+
+        // 创建一个组件用于全局
+        const Hello = Vue.extend({
+            template:`
+                <div>
+                    <h2>你好啊 {{name}}</h2>
+                </div>
+            `,
+            data(){
+                return{
+                    name:'Cindy'
+                }
+            }
+        })
+        // 注册全局组件方法
+        Vue.component('Hello',Hello)
+
+        // 创建vm
+        new Vue({
+            el:'#root',  
+            // 第二步：注册组件(局部组件的注册方法)
+            components:{
+                School:School,
+                Student:Student
+            }
+        })
+
+    </script>
+</body>
+</html>

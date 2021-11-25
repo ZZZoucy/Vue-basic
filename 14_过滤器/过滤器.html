@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>过滤器</title>
+    <!-- 引入Vue，将有一个全局的 Vue 构造函数 -->
+    <script src="../js/vue.js"></script>
+    <!-- 引入dayjs，将有一个全局的 dayjs 构造函数 -->
+    <script src="../js/dayjs.min.js"></script>
+</head>
+<body>
+    <!-- 过滤器
+        定义：对要显示的数据进行特定格式化后再提示（适用于一些简单逻辑的处理）
+        语法：
+            1. 注册过滤器：Vue.filter(name,callback) 或 new Vue{filters:{}}
+            2. 使用过滤器：{{ xxx | 过滤器名 }} 或 v-bind:属性 = "xxx | 过滤器名"
+        备注：
+            1. 过滤器也可以接收额外参数，多个过滤器也可以串联
+            2. 并没有改变原本的数据，是产生新的对应的数据
+    -->
+
+    <!-- 准备一个容器 -->
+    <div id='root'>
+        <h2>时间戳：</h2>
+        <span>{{time}}</span>
+        <h2>computed 实现格式化后的时间：</h2>
+        <span>{{fmtTime}}</span>
+        <h2>methods 实现格式化后的时间：</h2>
+        <span>{{getFmtTime()}}</span>
+        <h2>过滤器 实现格式化后的时间：</h2>
+        <span>{{time | timeFormater}}</span><br><br>
+        <!-- 将 time 永远作为第一个参数传给 timeFormater 函数,Vue 来调用它，并函数用返回值替换掉{{}}里面的全部内容 -->
+        <!-- 过滤器传参 -->
+        <span>{{time | timeFormater('YYYY年MM月DD日')}}</span><br><br>
+        <!-- 连续过滤器，前一个的返回值作为后一个的参数，因此 mySlice 不会直接操作到 time -->
+        <span>{{time | timeFormater('YYYY年MM月DD日') | mySlice}}</span><br><br>
+    </div>
+    <script>
+        Vue.config.productionTip = false;   // 阻止 Vue 在启动时生成生产提示
+
+        // 全局过滤器，在 new Vue 之前
+        Vue.filter('mySlice2',function(value){
+            return value.slice(0,4)
+        })
+
+        new Vue({
+            el:'#root',   
+            data:{        
+                time: 1636987158887  // 时间戳
+            },
+            computed:{
+                fmtTime(){
+                    return dayjs(this.time).format('YYYY-MM-DD HH:mm:ss')
+                }
+            },
+            methods:{
+                getFmtTime(){
+                    return dayjs(this.time).format('YYYY-MM-DD HH:mm:ss')
+                }
+            },
+            // 过滤器的本质就是一个函数
+            // 这都是局部过滤器
+            filters:{
+                // str="YYYY-MM-DD HH:mm:ss"，默认参数的形式
+                timeFormater(value,str="YYYY-MM-DD HH:mm:ss"){
+                    return dayjs(value).format(str)
+                },
+                mySlice(value){
+                    return value.slice(0,4)
+                }
+            }
+        })
+
+        
+
+    </script>
+</body>
+</html>
